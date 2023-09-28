@@ -6,7 +6,7 @@ using namespace std;
 
 class Stack {
 	int top;
-    int * sptr;
+    	int * sptr;
 
 
 public:
