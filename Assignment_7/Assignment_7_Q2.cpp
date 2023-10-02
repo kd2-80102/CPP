@@ -1,114 +1,168 @@
 #include <iostream>
-#include <string.h>
-
 using namespace std;
 
+class Product
+{
+protected:
+    int id;
+    string title;
+    double price;
 
-class Product {
-
-    protected:
-        int id;
-        string title;
-        double price;
-
-    Product() {
+public:
+    Product()
+    {
         this->id = 0;
         this->title = "";
-        this->price = 0.0;
+        this->price = 0;
+    }
+    Product(int id, string title, double price) : id(id), title(title), price(price)
+    {
     }
 
-    
-
-    void accept(){
-        
+    virtual void addProduct()
+    {
+        cout << "Enter Product id : ";
+        cin >> this->id;
+        cout << "Enter Product title : ";
+        cin >> this->title;
+        cout << "Enter Product price : ";
+        cin >> this->price;
     }
 
-    void display(){
+    virtual double calcDiscount() = 0;
 
+    double calcFinalPrice()
+    {
+        return price - calcDiscount();
     }
 };
-
-
 
 class Book : public Product
 {
 private:
     string author;
+
 public:
-    Book(string id, string title, string author, double price) {
-        this->id = id;
-        this->title = title;
+    Book()
+    {
+        this->author = "";
+    }
+    Book(int id, string title, string author, double price) : Product(id, title, price)
+    {
         this->author = author;
-        this->price = price;
-
+    }
+    void addProduct()
+    {
+        cout << "Enter Book Details " << endl;
+        Product::addProduct();
+        cout << "Enter Book Author : ";
+        cin >> this->author;
     }
 
-
-
-
-
-
+    double calcDiscount()
+    {
+        return 0.10 * price; 
+    }
 };
 
-class Tape : public Product {
+class Tape : public Product
+{
 private:
-    double price_tape;
+    string artist;
+
 public:
-    Tape(string id, string title, string artist, double price) {
-        this->id = id;
-        this->title = title;
+    Tape()
+    {
+    }
+    Tape(int id, string title, string artist, double price) : Product(id, title, price)
+    {
         this->artist = artist;
-        this->price = price;
+    }
+    void addProduct()
+    {
+        cout << "Enter Tape Details : ";
+        Product::addProduct();
+        cout << "Enter Tape artist : ";
+        cin >> this->artist;
     }
 
+    double calcDiscount()
+    {
+        return 0.05 * price; 
+    }
 };
 
+int menu()
+{
+    int choice;
+    cout << "--------------------" << endl;
+    cout << "0. Exit" << endl;
+    cout << "1. Add Book" << endl;
+    cout << "2. Add Tape" << endl;
+    cout << "Enter Your Chocie = ";
+    cin >> choice;
+    cout << "--------------------" << endl;
+    return choice;
+}
 
+int main()
+{
+    int choice;
+    int index = 0;
+    Product *arr[3]; // To store 3 products
 
+    while ((choice = menu()) != 0)
+    {
+        switch (choice)
+        {
+        case 1:
+            if (index < 3)
+            {
+                arr[index] = new Book();
+                arr[index]->addProduct();
+                arr[index]->calcDiscount(); 
+                arr[index]->calcFinalPrice();
+                index++;
+            }
+            else
+            {
+                cout << "Product limit reached already 3 products added.";
+            }
+            break;
+        case 2:
+            if (index < 3)
+            {
+                arr[index] = new Tape();
+                arr[index]->addProduct();
+                arr[index]->calcDiscount(); // it will call tape class function as it is overridden
+                arr[index]->calcFinalPrice();
+                index++;
+            }
+            else
+            {
+                cout << "Product limit reached already 3 products added.";
+            }
+            break;
+        default:
+            cout << "Wrong Choice ..." << endl;
+            break;
+        }
+    }
 
+   
+    double totalBill = 0.0;
+    for (int i = 0; i < 3; i++)
+    {
+        totalBill += arr[i]->calcFinalPrice();
+    }
 
+    cout << "Total Bill : " << totalBill << std::endl;
 
+   
+    for (int i = 0; i < 3; i++)
+    {
+        delete arr[i];
+    }
+    return 0;
+}
 
-
-
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-};
